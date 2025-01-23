@@ -49,7 +49,7 @@
   z-index: -1;
   width: 108%;
   height: 24%;
-  background-color: #41d1ff;
+  background-color: #d2bae2;
   transition: 200ms ease;
 }
 .main-title-link:hover::before,
@@ -89,7 +89,7 @@
   white-space: nowrap;
   color: rgba(255, 255, 255, 0.87);
 
-  background-color: #646cff;
+  background-color: #e9b2e1;
   border: 1px solid transparent;
   border-radius: 1.25rem;
   transition: color 0.25s, border-color 0.25s, background-color 0.25s;

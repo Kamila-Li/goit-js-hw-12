@@ -17,7 +17,21 @@
   "author": "Alexander Repeta <alexander.repeta@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.7.9",
+    "izitoast": "^1.4.0",
+    "simplelightbox": "^2.14.3",
     "vite-plugin-full-reload": "^1.2.0",
     "vite-plugin-html-inject": "^1.1.2"
-  }
+  },
+  "description": "Цей проект було створено за допомогою Vite. Для знайомства та налаштування додаткових можливостей [звернись до документації](https://vitejs.dev/).",
+  "main": "vite.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kamila-Li/goit-js-hw-12.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/Kamila-Li/goit-js-hw-12/issues"
+  },
+  "homepage": "https://github.com/Kamila-Li/goit-js-hw-12#readme"
 }
