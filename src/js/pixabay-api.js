@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const keyAPI = '48188433-e0448b24de47b1903ec6a4bb7';
+const keyAPI = '48435213-edc98ac088ac3c077da86a508';
 
 export const fetchPhotos = (query, currentPage) => {
   const axiosOptions = {

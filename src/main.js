@@ -14,6 +14,7 @@ const loadMoreBtn = document.querySelector('.load-more-btn');
 
 let page = 1;
 let query = '';
+let lightbox;
 
 loader.style.display = 'none';
 
@@ -53,7 +54,7 @@ const onFormSubmit = async event => {
     const markup = renderPhotoCards(data.hits);
     galleryContainer.insertAdjacentHTML('beforeend', markup);
 
-    const lightbox = new SimpleLightbox('.gallery-item', {
+    lightbox = new SimpleLightbox('.gallery-item', {
       captions: true,
       captionsData: 'alt',
       captionDelay: 250,
@@ -83,18 +84,18 @@ const onLoadMoreBtnClick = async event => {
     const markup = renderPhotoCards(data.hits);
     galleryContainer.insertAdjacentHTML('beforeend', markup);
 
+    lightbox.refresh();
+
     if (page * 15 >= data.totalHits) {
-      loadMoreBtn.classList.add('is-hidden');
-      loadMoreBtn.removeEventListener('click', onLoadMoreBtnClick);
-
-      smoothScroll();
-
       iziToast.info({
         title: 'Info',
         position: 'topRight',
         message: "We're sorry, but you've reached the end of search results.",
       });
+      loadMoreBtn.classList.add('is-hidden');
+      loadMoreBtn.removeEventListener('click', onLoadMoreBtnClick);
     }
+    smoothScroll();
   } catch (error) {
     iziToast.error({
       title: 'Error',
@@ -105,8 +106,7 @@ const onLoadMoreBtnClick = async event => {
 };
 
 const smoothScroll = () => {
-  const cardHeight =
-    document.galleryContainer.firstElementChild.getBoundingClientRect();
+  const { height: cardHeight } = galleryContainer.getBoundingClientRect();
   window.scrollBy({
     top: cardHeight * 2,
     behavior: 'smooth',
