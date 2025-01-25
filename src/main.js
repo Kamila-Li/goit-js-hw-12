@@ -76,6 +76,7 @@ const onFormSubmit = async event => {
 formEl.addEventListener('submit', onFormSubmit);
 
 const onLoadMoreBtnClick = async event => {
+  loader.style.display = 'block';
   try {
     page++;
 
@@ -96,6 +97,7 @@ const onLoadMoreBtnClick = async event => {
       loadMoreBtn.removeEventListener('click', onLoadMoreBtnClick);
     }
     smoothScroll();
+    loader.style.display = 'none';
   } catch (error) {
     iziToast.error({
       title: 'Error',
