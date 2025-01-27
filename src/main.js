@@ -19,28 +19,26 @@ let lightbox;
 loader.style.display = 'none';
 
 const onFormSubmit = async event => {
-  try {
-    event.preventDefault();
-    galleryContainer.innerHTML = '';
-    loader.style.display = 'block';
+  event.preventDefault();
+  galleryContainer.innerHTML = '';
 
-    query = event.currentTarget.elements.user_query.value.trim();
+  query = event.currentTarget.elements.user_query.value.trim();
+  page = 1;
+  loadMoreBtn.classList.add('is-hidden');
+  loader.style.display = 'block';
 
-    if (query === '') {
-      iziToast.warning({
-        title: 'Warning',
-        position: 'topRight',
-        message: 'Please enter a search query!',
-      });
-      return;
-    }
-
-    page = 1;
-    loadMoreBtn.classList.add('is-hidden');
-
-    const { data } = await fetchPhotos(query, page);
-
+  if (query === '') {
+    iziToast.warning({
+      title: 'Warning',
+      position: 'topRight',
+      message: 'Please enter a search query!',
+    });
     loader.style.display = 'none';
+    return;
+  }
+
+  try {
+    const { data } = await fetchPhotos(query, page);
 
     if (!data.hits.length) {
       iziToast.error({
@@ -69,6 +67,8 @@ const onFormSubmit = async event => {
       loadMoreBtn.addEventListener('click', onLoadMoreBtnClick);
     }
   } catch (error) {
+    console.log(error);
+  } finally {
     loader.style.display = 'none';
   }
 };
@@ -77,10 +77,10 @@ formEl.addEventListener('submit', onFormSubmit);
 
 const onLoadMoreBtnClick = async event => {
   loader.style.display = 'block';
+  page++;
   try {
-    page++;
-
     const { data } = await fetchPhotos(query, page);
+    loader.style.display = 'none';
 
     const markup = renderPhotoCards(data.hits);
     galleryContainer.insertAdjacentHTML('beforeend', markup);
@@ -96,8 +96,8 @@ const onLoadMoreBtnClick = async event => {
       loadMoreBtn.classList.add('is-hidden');
       loadMoreBtn.removeEventListener('click', onLoadMoreBtnClick);
     }
+
     smoothScroll();
-    loader.style.display = 'none';
   } catch (error) {
     iziToast.error({
       title: 'Error',
