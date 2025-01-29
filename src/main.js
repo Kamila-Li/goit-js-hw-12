@@ -1,3 +1,23 @@
+import iziToast from 'izitoast';
+import 'izitoast/dist/css/iziToast.min.css';
+
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+
+import { fetchPhotos } from './js/pixabay-api';
+import { renderPhotoCards } from './js/render-functions';
+
+const formEl = document.querySelector('.form-search');
+const galleryContainer = document.querySelector('.gallery');
+const loader = document.querySelector('.loader');
+const loadMoreBtn = document.querySelector('.load-more-btn');
+
+let page = 1;
+let query = '';
+let lightbox;
+
+loader.style.display = 'none';
+
 const onFormSubmit = async event => {
   event.preventDefault();
   galleryContainer.innerHTML = '';
@@ -24,11 +44,11 @@ const onFormSubmit = async event => {
       iziToast.error({
         title: 'Error',
         position: 'topRight',
-        message: 'Sorry, no images found. Try again!',
+        message:
+          'Sorry, there are no images matching your search query. Please try again!',
       });
       return;
     }
-
     const markup = renderPhotoCards(data.hits);
     galleryContainer.insertAdjacentHTML('beforeend', markup);
 
@@ -41,9 +61,9 @@ const onFormSubmit = async event => {
 
     formEl.reset();
 
-    // Якщо зображень більше 15, показуємо кнопку
-    if (data.hits.length === 15) {
+    if (data.totalHits > 1) {
       loadMoreBtn.classList.remove('is-hidden');
+
       loadMoreBtn.addEventListener('click', onLoadMoreBtnClick);
     }
   } catch (error) {
@@ -53,7 +73,9 @@ const onFormSubmit = async event => {
   }
 };
 
-const onLoadMoreBtnClick = async () => {
+formEl.addEventListener('submit', onFormSubmit);
+
+const onLoadMoreBtnClick = async event => {
   loader.style.display = 'block';
   page++;
   try {
@@ -62,11 +84,10 @@ const onLoadMoreBtnClick = async () => {
 
     const markup = renderPhotoCards(data.hits);
     galleryContainer.insertAdjacentHTML('beforeend', markup);
-
+    smoothScroll();
     lightbox.refresh();
 
-    // Якщо нових зображень менше 15, ховаємо кнопку
-    if (data.hits.length < 15) {
+    if (page * 15 >= data.totalHits) {
       iziToast.info({
         title: 'Info',
         position: 'topRight',
@@ -75,8 +96,6 @@ const onLoadMoreBtnClick = async () => {
       loadMoreBtn.classList.add('is-hidden');
       loadMoreBtn.removeEventListener('click', onLoadMoreBtnClick);
     }
-
-    smoothScroll();
   } catch (error) {
     iziToast.error({
       title: 'Error',
@@ -87,12 +106,10 @@ const onLoadMoreBtnClick = async () => {
 };
 
 const smoothScroll = () => {
-  const cards = document.querySelectorAll('.photo-card');
-  if (cards.length >= 2) {
-    const cardHeight = cards[0].getBoundingClientRect().height;
-    window.scrollBy({
-      top: cardHeight * 2,
-      behavior: 'smooth',
-    });
-  }
+  const { height: cardHeight } =
+    galleryContainer.firstElementChild.getBoundingClientRect();
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
 };
